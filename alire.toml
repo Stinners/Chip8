@@ -1,0 +1,10 @@
+name = "chip8"
+description = ""
+version = "0.1.0-dev"
+
+authors = ["Chris Stinson"]
+maintainers = ["Chris Stinson <example@example.com>"]
+maintainers-logins = ["github-username"]
+licenses = "MIT"
+website = ""
+tags = []
