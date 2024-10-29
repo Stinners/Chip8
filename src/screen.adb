@@ -1,38 +1,61 @@
+with Ada.Text_IO; use Ada.Text_IO;
+
 package body Screen is
 
    ------------------ Types -------------------------
 
-   procedure DrawPixels
-     (Screen_Width, Screen_Height, N_Columns, N_Rows : int;
-      Pixel_Color, Grid_Color                        : RayColor)
-   is
+   procedure DrawPixels (Display : Display_Buffer) is
+
       Grid_Width   : constant Float := 0.5;
-      Pixel_Width  : constant int   := Screen_Width / N_Columns;
-      Pixel_Height : constant int   := Screen_Height / N_Rows;
+      Pixel_Width  : constant int   := Window_Width / N_Columns;
+      Pixel_Height : constant int   := Window_Height / N_Rows;
 
       X, Y : int;
+
+      Display_Byte  : Integer     := 1;
+      Pixel_On_Mask : Memory.Byte := 1;
+      Pixel_Color   : RayColor;
+      Pixel_Number  : Integer     := 1;
    begin
 
       --  Draw the pixels themselves
-      for Row in 0 .. (N_Columns - 1) loop
-         X := Row * Pixel_Width;
+      for Col in 0 .. (N_Rows - 1) loop
+         Y := Col * Pixel_Height + Border_Width;
 
-         for Col in 0 .. (N_Rows - 1) loop
-            Y := Col * Pixel_Height;
+         for Row in 0 .. (N_Columns - 1) loop
+            X := Row * Pixel_Width + Border_Width;
+
+            if (Display (Display_Idx (Display_Byte)) and Pixel_On_Mask) = 0
+            then
+               Pixel_Color := Pixel_Off_Color;
+            else
+               Pixel_Color := Pixel_On_Color;
+            end if;
 
             DrawRectangle
               (Pos_X  => X, Pos_Y => Y, Width => Pixel_Width,
                Height => Pixel_Height, Color => Pixel_Color);
+
+            --  Increment the bitmask
+            Pixel_On_Mask := Rotate_Left (Pixel_On_Mask, 1);
+
+            --  When the bitmask = 1 then we're at the start of a new byte
+            if Pixel_On_Mask = 1 then
+               Display_Byte := Display_Byte + 1;
+            end if;
+
+            Pixel_Number := Pixel_Number + 1;
+            Put_Line (Pixel_Number'Image);
 
          end loop;
       end loop;
 
       --  Draw the grid over top
       for Row in 0 .. (N_Columns - 1) loop
-         X := int (Row * Pixel_Width);
+         X := Row * Pixel_Width + Border_Width;
 
          for Col in 0 .. (N_Rows - 1) loop
-            Y := Col * Pixel_Height;
+            Y := Col * Pixel_Height + Border_Width;
 
             DrawRectangleLinesEx
               ((Float (X), Float (Y), Float (Pixel_Width),

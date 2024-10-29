@@ -1,9 +1,11 @@
 with Interfaces.C;         use Interfaces.C;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
+with Memory; use Memory;
+
 package Screen is
 
-   ------------------ Types -------------------------
+   ------------------ Types And Constants-------------------------
 
    type RayColor is record
       r : unsigned_char;
@@ -13,28 +15,25 @@ package Screen is
    end record with
      Convention => C_Pass_By_Copy;
 
-   type Rectangle is record
-      X      : Float;
-      Y      : Float;
-      width  : Float;
-      height : Float;
-   end record with
-     Convention => C_Pass_By_Copy;
-
-   ------------------ Constants ---------------------
+   type Rectangle is private;
 
    N_Columns : constant int := 64;
    N_Rows    : constant int := 32;
 
-   Window_Height : constant int := N_Rows * 15;
-   Window_Width  : constant int := N_Columns * 15;
+   --  The display is organized as an array of bytes, where each bit represents
+   --  a pixel, this means that we can draw a sprit by just doing bitwise xor
+   type Display_Idx is range 1 .. (N_Columns * N_Rows / 8);
+   type Display_Buffer is array (Display_Idx) of Memory.Byte;
 
-   BrightRed : constant RayColor := (172, 82, 0, 255);
-   LightGray : constant RayColor := (200, 200, 200, 255);
-   DarkGray  : constant RayColor := (80, 80, 80, 255);
-   RayWhite  : constant RayColor := (245, 245, 245, 255);
-   DarkBlue  : constant RayColor := (0, 82, 172, 255);
-   Black     : constant RayColor := (0, 0, 0, 255);
+   Border_Width  : constant int := 5;
+   Window_Height : constant int := N_Rows * 15 + 2 * Border_Width;
+   Window_Width  : constant int := N_Columns * 15 + 2 * Border_Width;
+
+   Grid_Color      : constant RayColor := (20, 20, 20, 255);
+   Border_Color    : constant RayColor := (200, 200, 200, 255);
+   RayWhite        : constant RayColor := (245, 245, 245, 255);
+   Pixel_Off_Color : constant RayColor := (0, 0, 0, 255);
+   Pixel_On_Color  : constant RayColor := (0, 228, 48, 255);
 
    ------------------ Raylib Bindings ---------------------
 
@@ -53,6 +52,23 @@ package Screen is
    procedure ClearBackground (Color : RayColor) with
      Import => True, Convention => C, External_Name => "ClearBackground";
 
+   procedure SetTargetFPS (Frames : int) with
+     Import => True, Convention => C, External_Name => "SetTargetFPS";
+
+   ------------------ Sub-Programs ---------------------
+
+   procedure DrawPixels (Display : Display_Buffer);
+
+private
+
+   type Rectangle is record
+      X      : Float;
+      Y      : Float;
+      width  : Float;
+      height : Float;
+   end record with
+     Convention => C_Pass_By_Copy;
+
    procedure DrawRectangle
      (Pos_X, Pos_Y, Width, Height : int; Color : RayColor) with
      Import => True, Convention => C, External_Name => "DrawRectangle";
@@ -60,11 +76,5 @@ package Screen is
    procedure DrawRectangleLinesEx
      (Rec : Rectangle; Thickness : Float; Color : RayColor) with
      Import => True, Convention => C, External_Name => "DrawRectangleLinesEx";
-
-   ------------------ Raylib Bindings ---------------------
-
-   procedure DrawPixels
-     (Screen_Width, Screen_Height, N_Columns, N_Rows : int;
-      Pixel_Color, Grid_Color                        : RayColor);
 
 end Screen;
