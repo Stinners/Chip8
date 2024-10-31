@@ -36,6 +36,11 @@ package body Screen is
               (Pos_X  => X, Pos_Y => Y, Width => Pixel_Width,
                Height => Pixel_Height, Color => Pixel_Color);
 
+            DrawRectangleLinesEx
+              ((Float (X), Float (Y), Float (Pixel_Width),
+                Float (Pixel_Height)),
+               Grid_Width, Grid_Color);
+
             --  Increment the bitmask
             Pixel_On_Mask := Rotate_Left (Pixel_On_Mask, 1);
 
@@ -45,25 +50,9 @@ package body Screen is
             end if;
 
             Pixel_Number := Pixel_Number + 1;
-            Put_Line (Pixel_Number'Image);
-
          end loop;
       end loop;
 
-      --  Draw the grid over top
-      for Row in 0 .. (N_Columns - 1) loop
-         X := Row * Pixel_Width + Border_Width;
-
-         for Col in 0 .. (N_Rows - 1) loop
-            Y := Col * Pixel_Height + Border_Width;
-
-            DrawRectangleLinesEx
-              ((Float (X), Float (Y), Float (Pixel_Width),
-                Float (Pixel_Height)),
-               Grid_Width, Grid_Color);
-
-         end loop;
-      end loop;
    end DrawPixels;
 
 end Screen;

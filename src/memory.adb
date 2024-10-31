@@ -1,6 +1,11 @@
 package body Memory is
 
-   Glyph_Size : constant Memory_Idx := 5;
+   function InitState return Emulator_State is
+   begin
+      return
+        (Mem   => [others => 0], Program_Counter => 1, Index => 1,
+         Stack => [others => 1], Stack_Ptr => 1, Registers => [others => 0]);
+   end InitState;
 
    procedure InitFont (Mem : in out System_Memory; Start_Idx : Memory_Idx) is
 
@@ -25,7 +30,6 @@ package body Memory is
       --!pp on
 
       End_Idx : constant Memory_Idx := Start_Idx + Glyphs'Length - 1;
-
    begin
       Mem (Start_Idx .. End_Idx) := Glyphs;
    end InitFont;
