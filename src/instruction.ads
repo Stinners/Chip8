@@ -26,6 +26,6 @@ private
    function FirstNibble (This_Byte : Byte) return Nibble;
    function SecondNibble (This_Byte : Byte) return Nibble;
 
-   --  procedure Do_Clear_Screen(
+   procedure Clear_Screen (Display : in out Display_Buffer);
 
 end Instruction;

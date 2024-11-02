@@ -19,16 +19,6 @@ package body Instruction is
          NNN    => NNN);
    end Decode;
    ----------------------------------------------------------------
-
-   --  procedure Execute(State: Emulator_State; This_Instruction: Instruction)
-   --  is
-   --  begin
-   --    case This_Instruction.Opcode is
-   --       when Clear_Screen_Op then
-   --
-   --    end case;
-   --  end Execute;
-
    function FirstNibble (This_Byte : Byte) return Nibble is
       Mask : constant Byte := 2#0000_1111#;
    begin
@@ -41,5 +31,27 @@ package body Instruction is
    begin
       return Nibble (Shift_Right (Nibble_Bits, 4));
    end SecondNibble;
+
+   procedure Execute
+     (State : in out Emulator_State; This_Instruction : Instruction)
+   is
+   begin
+
+      case This_Instruction.Opcode is
+         when Clear_Screen_Op =>
+            Clear_Screen (State.Display);
+
+         when others =>
+            null;
+
+      end case;
+   end Execute;
+
+   procedure Clear_Screen (Display : in out Display_Buffer) is
+   begin
+      for idx in Display_Buffer'Range loop
+         Display (idx) := 0;
+      end loop;
+   end Clear_Screen;
 
 end Instruction;

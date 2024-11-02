@@ -3,8 +3,9 @@ package body Memory is
    function InitState return Emulator_State is
    begin
       return
-        (Mem   => [others => 0], Program_Counter => 1, Index => 1,
-         Stack => [others => 1], Stack_Ptr => 1, Registers => [others => 0]);
+        (Mem     => [others => 0], Program_Counter => 1, Index => 1,
+         Stack   => [others => 1], Stack_Ptr => 1, Registers => [others => 0],
+         Display => [others => 0]);
    end InitState;
 
    procedure InitFont (Mem : in out System_Memory; Start_Idx : Memory_Idx) is

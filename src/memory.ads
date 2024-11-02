@@ -1,3 +1,5 @@
+with Interfaces.C; use Interfaces.C;
+
 package Memory is
 
    type Byte is mod 2**8;
@@ -15,6 +17,14 @@ package Memory is
    type Stack_Type is array (Stack_Idx) of Memory_Idx;
    type Registers_Type is array (0 .. 15) of Byte;
 
+   --  The display is organized as an array of bytes, where each bit represents
+   --  a pixel, this means that we can draw a sprit by just doing bitwise xor
+   N_Columns : constant int := 64;
+   N_Rows    : constant int := 32;
+
+   type Display_Idx is range 1 .. (N_Columns * N_Rows / 8);
+   type Display_Buffer is array (Display_Idx) of Memory.Byte;
+
    type Emulator_State is record
       Mem             : System_Memory;
       Program_Counter : Memory_Idx;
@@ -24,6 +34,7 @@ package Memory is
       --  Delay Timer
       --  Sound Timer
       Registers       : Registers_Type;
+      Display         : Display_Buffer;
    end record;
 
    procedure InitFont (Mem : in out System_Memory; Start_Idx : Memory_Idx);

@@ -13,7 +13,6 @@ procedure Chip8 is
    Title : constant chars_ptr := New_String ("CHIP-8");
 
    Emulator : Memory.Emulator_State := Memory.InitState;
-   Display  : Display_Buffer        := [others => 0];
 
 begin
 
@@ -31,7 +30,7 @@ begin
       ---------  Drawing  -----------------
       BeginDrawing;
       ClearBackground (Color => Border_Color);
-      DrawPixels (Display);
+      DrawPixels (Emulator.Display);
       EndDrawing;
       ---------  End Drawing  -------------
 
