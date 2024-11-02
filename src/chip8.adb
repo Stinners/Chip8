@@ -5,6 +5,8 @@ with Raylib;
 
 with Screen; use Screen;
 with Memory;
+with Raylib; use Raylib;
+with Instruction;
 
 procedure Chip8 is
 
@@ -17,15 +19,14 @@ begin
 
    Memory.InitFont (Emulator.Mem, 16#050#);
 
-   Screen.InitWindow
+   Raylib.InitWindow
      (Title  => Title, Width => Screen.Window_Width,
       Height => Screen.Window_Height);
 
    SetTargetFPS (60);
    while WindowShouldClose = 0 loop
 
-      --------- Input --------------------
-      ------------------------------------
+      ---------  Input --------------------
 
       ---------  Drawing  -----------------
       BeginDrawing;

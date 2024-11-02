@@ -1,4 +1,4 @@
-with Ada.Text_IO; use Ada.Text_IO;
+with Raylib;
 
 package body Screen is
 
@@ -17,7 +17,6 @@ package body Screen is
       Pixel_Color   : RayColor;
       Pixel_Number  : Integer     := 1;
    begin
-
       --  Draw the pixels themselves
       for Col in 0 .. (N_Rows - 1) loop
          Y := Col * Pixel_Height + Border_Width;
@@ -32,11 +31,11 @@ package body Screen is
                Pixel_Color := Pixel_On_Color;
             end if;
 
-            DrawRectangle
+            Raylib.DrawRectangle
               (Pos_X  => X, Pos_Y => Y, Width => Pixel_Width,
                Height => Pixel_Height, Color => Pixel_Color);
 
-            DrawRectangleLinesEx
+            Raylib.DrawRectangleLinesEx
               ((Float (X), Float (Y), Float (Pixel_Width),
                 Float (Pixel_Height)),
                Grid_Width, Grid_Color);

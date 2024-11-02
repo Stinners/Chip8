@@ -1,6 +1,9 @@
-with Interfaces.C; use Interfaces.C;
+with Interfaces.C;         use Interfaces.C;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package Raylib is
+
+   ----------  Handling Keyboard Input -----------------
 
    --  Key definitions are found around line 600 of raylib.h
    type Key_Code is new int;
@@ -22,6 +25,50 @@ package Raylib is
    Key_V : constant Key_Code := 86;
 
    function IsKeyDown (Key : Key_Code) return Boolean;
+
+   ----------  Drawing Functions ------------------------
+
+   type RayColor is record
+      r : unsigned_char;
+      g : unsigned_char;
+      b : unsigned_char;
+      a : unsigned_char;
+   end record with
+     Convention => C_Pass_By_Copy;
+
+   type Rectangle is record
+      X      : Float;
+      Y      : Float;
+      width  : Float;
+      height : Float;
+   end record with
+     Convention => C_Pass_By_Copy;
+
+   procedure InitWindow (Width, Height : int; Title : chars_ptr) with
+     Import => True, Convention => C, External_Name => "InitWindow";
+
+   procedure BeginDrawing with
+     Import => True, Convention => C, External_Name => "BeginDrawing";
+
+   procedure EndDrawing with
+     Import => True, Convention => C, External_Name => "EndDrawing";
+
+   function WindowShouldClose return int with
+     Import => True, Convention => C, External_Name => "WindowShouldClose";
+
+   procedure ClearBackground (Color : RayColor) with
+     Import => True, Convention => C, External_Name => "ClearBackground";
+
+   procedure SetTargetFPS (Frames : int) with
+     Import => True, Convention => C, External_Name => "SetTargetFPS";
+
+   procedure DrawRectangle
+     (Pos_X, Pos_Y, Width, Height : int; Color : RayColor) with
+     Import => True, Convention => C, External_Name => "DrawRectangle";
+
+   procedure DrawRectangleLinesEx
+     (Rec : Rectangle; Thickness : Float; Color : RayColor) with
+     Import => True, Convention => C, External_Name => "DrawRectangleLinesEx";
 
 private
 
