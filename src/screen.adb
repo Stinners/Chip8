@@ -1,5 +1,3 @@
-with Raylib;
-
 package body Screen is
 
    ------------------ Types -------------------------

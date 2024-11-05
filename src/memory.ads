@@ -2,12 +2,17 @@ with Interfaces.C; use Interfaces.C;
 
 package Memory is
 
-   type Byte is mod 2**8;
+   type Byte is mod 2**8 with
+     Size => 8;
    pragma Provide_Shift_Operators (Byte);
+
+   type Nibble is mod 16#10# with
+     Size => 4;
+
    Byte_Size : constant Integer := Integer (Byte'Last - Byte'First + 1);
 
-   --  General Purpose Memory
-   type Memory_Idx is range 16#1# .. 16#1000#;
+   --  General purpose memory
+   type Memory_Idx is range 16#0# .. 16#FFF#;
    type Program_Space is range 16#200# .. 16#1000#;
    type Memory_Array is array (Memory_Idx range <>) of Byte;
    subtype System_Memory is Memory_Array (Memory_Idx'First .. Memory_Idx'Last);
@@ -15,7 +20,7 @@ package Memory is
    --  Stack and Registers
    type Stack_Idx is range 1 .. 32;
    type Stack_Type is array (Stack_Idx) of Memory_Idx;
-   type Registers_Type is array (0 .. 15) of Byte;
+   type Registers_Type is array (Nibble) of Byte;
 
    --  The display is organized as an array of bytes, where each bit represents
    --  a pixel, this means that we can draw a sprit by just doing bitwise xor
